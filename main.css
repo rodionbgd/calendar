@@ -1,3 +1,49 @@
+html,
+body {
+  height: 100vh;
+}
+header {
+  text-align: center;
+}
+
+.invalid-feedback {
+  position: absolute;
+  top: 100%;
+  z-index: 5;
+  display: none;
+  max-width: 100%;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.1rem;
+  font-size: 0.875rem;
+  color: #fff;
+  background-color: rgba(220, 53, 69, 0.9);
+  border-radius: 0.25rem;
+}
+.app {
+  display: flex;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.app > * {
+  padding: 1em 1.5em;
+  margin: 1.5em;
+}
+
+.calendar-todo {
+  width: 70%;
+}
+
+.current-todo-wrapper {
+  display: block;
+  width: 35%;
+}
+
+.current-todo {
+  height: 60%;
+  overflow-y: scroll;
+}
+
 .calendar-day {
   width: 100px;
   min-width: 100px;
@@ -7,7 +53,6 @@
 
 .calendar-table {
   margin: 0 auto;
-  width: 800px;
 }
 
 .popover-display {
@@ -19,6 +64,7 @@
   height: 26rem;
   overflow-y: scroll;
 }
+
 .selected {
   background-color: #eee;
 }
@@ -38,7 +84,6 @@
   background-image: linear-gradient(to bottom, #dff0d8 0px, #c8e5bc 100%);
   background-repeat: repeat-x;
   color: #3c763d;
-  border-width: 1px;
   font-size: 0.75em;
   padding: 0 0.75em;
   line-height: 2em;
@@ -66,7 +111,6 @@
   background-image: linear-gradient(to bottom, #d9edf7 0px, #b9def0 100%);
   background-repeat: repeat-x;
   color: #31708f;
-  border-width: 1px;
 }
 
 .event.all-day.begin {
@@ -104,5 +148,16 @@
 .table-tight-vert > tfoot > tr > td {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+td {
+  border-bottom: 1px solid #ddd;
+}
+.calendar-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+  width: 100%;
 }
 
