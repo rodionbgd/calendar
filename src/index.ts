@@ -77,7 +77,7 @@ export const calendar = <HTMLElement>document.getElementById("calendar");
 
 // Current todolist
 export const todayTodosList = <HTMLUListElement>(
-  document.getElementById("today-todo_generator-list")
+  document.getElementById("today-todos-list")
 );
 export const todayTodosDate = <HTMLElement>(
   document.getElementById("today-todos-date")
