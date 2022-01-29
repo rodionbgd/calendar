@@ -7,7 +7,7 @@ module.exports = {
   entry: "./src/index.ts",
   output: {
     filename: "[name].bundle.js",
-    publicPath: "/component_test",
+    publicPath: "/calendar",
     path: path.resolve(__dirname, "dist"),
     environment: {
       arrowFunction: false,

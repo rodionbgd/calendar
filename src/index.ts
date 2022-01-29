@@ -26,7 +26,7 @@ import todoCb from "./add_todo";
 import { createRouter, updateLocation } from "./routing";
 import { showActiveAnchor } from "./filter/utils";
 
-export const REPO_NAME = "/component_test";
+export const REPO_NAME = "/calendar";
 
 export const store = configureStore({
   reducer: {
