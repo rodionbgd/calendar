@@ -80,7 +80,7 @@ export const todayTodosList = <HTMLUListElement>(
   document.getElementById("today-todo_generator-list")
 );
 export const todayTodosDate = <HTMLElement>(
-  document.getElementById("today-todo_generator-date")
+  document.getElementById("today-todos-date")
 );
 
 export const deleteSelectedBtn = <HTMLButtonElement>(
