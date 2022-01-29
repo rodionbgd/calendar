@@ -32,8 +32,9 @@ module.exports = {
                     code: 120,
                 },
             ],
+            // "no-unused-vars": "off",
             "no-param-reassign": "off",
-            "import/prefer-default-export": "off",
+            "import/no-mutable-exports": "off",
         },
     }],
     settings: {

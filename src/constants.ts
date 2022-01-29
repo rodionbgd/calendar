@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/prefer-default-export
 export const constants = {
-  MONTH: [
+  MONTH_RU: [
     "Январь",
     "Февраль",
     "Март",
@@ -14,4 +14,21 @@ export const constants = {
     "Ноябрь",
     "Декабрь",
   ],
+  MONTH_REF: [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "june",
+    "july",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+  ],
+  YEAR_MONTH_ROUTE: /year\/\d+\/month\/\w+/,
+  YEAR_ROUTE: /year\/(\d+)/,
+  MONTH_ROUTE: /month\/(\w+)/,
 };

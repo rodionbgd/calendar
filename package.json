@@ -8,7 +8,7 @@
     "lint:fix": "eslint --fix src && prettier --write src",
     "ci": "npm test && npm run lint:fix",
     "prepare": "husky install",
-    "dev": "webpack --node-env development",
+    "dev": "webpack serve --node-env development",
     "build": "webpack --node-env production"
   },
   "husky": {

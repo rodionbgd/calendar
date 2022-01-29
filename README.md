@@ -1,2 +1,2 @@
-Планировщик задач с Fuzzy-фильтрацией и CRUD-операциями.
+Планировщик задач с фильтрацией и CRUD-операциями.
 https://otus.ru/lessons/javascript-basic/
