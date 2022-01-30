@@ -1,6 +1,6 @@
 import { Todo } from "./types";
 
-function validateForm(options: any) {
+export function validateForm(options: any) {
   let isValid = true;
   if (!options.todoTask.value) {
     options.todoTask.classList.add("invalid-feedback");
@@ -23,7 +23,7 @@ function validateForm(options: any) {
   return isValid;
 }
 
-export default function todoCb(options: Record<string, any>) {
+export default function getTodoFromForm(options: Record<string, any>) {
   let todo: Todo = {} as Todo;
   if (validateForm(options)) {
     const tagsStr = options.tagsEl.innerHTML.split(": ")[1];

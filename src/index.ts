@@ -22,7 +22,7 @@ import generateTodo from "./utils";
 import TODO from "./todo/todo";
 import { schema, schemaType } from "./todo/items";
 import { constantsTodo } from "./todo/constants_todo";
-import todoCb from "./add_todo";
+import getTodoFromForm from "./add_todo";
 import { createRouter, updateLocation } from "./routing";
 import { showActiveAnchor } from "./filter/utils";
 
@@ -239,7 +239,7 @@ function init() {
       tagsEl: filterTagsEl,
     };
     const { todos } = store.getState();
-    const filter = todoCb(options);
+    const filter = getTodoFromForm(options);
     todayTodosList.innerHTML = showTodayTodos(filter, todos);
     todayTodosDate.innerHTML = `Фильтр`;
   });
@@ -265,7 +265,7 @@ function init() {
       todoSelectedStatus: addTodoSelectedStatus,
       tagsEl: addTagsEl,
     };
-    const todo = todoCb(options);
+    const todo = getTodoFromForm(options);
     if (todo) {
       if (idToUpdate === undefined) {
         const newTodoId = await todoAPI.createItem(todo as schemaType);
