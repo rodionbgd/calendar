@@ -1,6 +1,5 @@
 import Router from "./router/router";
-import { renderCalendar, showTodayTodos } from "./render/calendar";
-import { showYear } from "./filter/filter_todos";
+import { renderCalendar, showTodayTodos, showYear } from "./render/calendar";
 import {
   calendar,
   calendarWrapper,

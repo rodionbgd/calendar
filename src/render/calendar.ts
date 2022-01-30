@@ -1,10 +1,9 @@
-import { TodoObj } from "../types";
+import { Todo, TodoObj } from "../types";
 import { constants } from "../constants";
 import { setMonthYear } from "../reducers";
-import { REPO_NAME } from "../index";
+import { calendarWrapper, REPO_NAME, store } from "../index";
 import { constantsTodo } from "../todo/constants_todo";
-import { currentDateTodos, filterTodos } from "../filter/filter_todos";
-import { schemaType } from "../todo/items";
+import { filterTodos } from "../filter/filter_todos";
 import { Store } from "redux";
 
 export function renderCalendar(
@@ -59,7 +58,10 @@ export function renderCalendar(
                 data-date="${currentDateString}">
                     <div class="date">${i + 1}</div>
                 `;
-    const filteredTodos = currentDateTodos(todos, { date1: currentDate });
+    const filteredTodos = filterTodos(todos, {
+      date1: `${currentDate} `,
+      date2: `${currentDate} `,
+    });
     if (filteredTodos.length) {
       filteredTodos.forEach((obj, index) => {
         if (index == 2 && filteredTodos.length > 3) {
@@ -105,15 +107,12 @@ export function renderCalendar(
   el.innerHTML = innerHTML;
 }
 
-export function showTodayTodos(
-  filter: Date | Partial<schemaType>,
-  todos: TodoObj[]
-) {
+export function showTodayTodos(filter: Date | Partial<Todo>, todos: TodoObj[]) {
   let todayTodos: TodoObj[];
   if (filter instanceof Date && !isNaN(Number(filter))) {
     todayTodos = filterTodos(todos, { date1: `${filter}`, date2: `${filter}` });
   } else {
-    todayTodos = filterTodos(todos, filter as Partial<schemaType>);
+    todayTodos = filterTodos(todos, filter as Partial<Todo>);
   }
   let innerHTML = "";
   todayTodos.forEach((obj) => {
@@ -344,4 +343,29 @@ export function renderPopover(store: Store, options: any) {
   popover.style.top = `46px`;
   popover.dataset.type = `${type}`;
   popover.style.left = `${(offset - popover.clientWidth) / 2}px`;
+}
+
+export function showYear(el: HTMLElement) {
+  calendarWrapper.style.display = "none";
+  el.style.display = "block";
+  const { todos, dates } = store.getState();
+  const year = dates.currentYear;
+  let innerHTML = "<ul>";
+  for (let i = 0; i < constants.MONTH_RU.length; i += 1) {
+    const date1 = new Date(year, i, 1);
+    const date2 = new Date(year, i + 1, 0);
+    innerHTML += `
+            <li class="calendar-month month-0 js-cal-option" data-date="${date1}">
+            <a href="${REPO_NAME}/year/${dates.currentYear}/month/${
+      constants.MONTH_REF[i]
+    }">${constants.MONTH_RU[i]}</a>
+                <span class="badge">${
+                  filterTodos(todos, { date1: `${date1}`, date2: `${date2}` })
+                    .length
+                }</span>
+            </li>
+        `;
+  }
+  innerHTML += "</ul>";
+  el.innerHTML = innerHTML;
 }

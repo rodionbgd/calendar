@@ -20,7 +20,7 @@ import {
 } from "./render/calendar";
 import generateTodo from "./utils";
 import TODO from "./todo/todo";
-import { schema } from "./todo/items";
+import { schema, schemaType } from "./todo/items";
 import { constantsTodo } from "./todo/constants_todo";
 import todoCb from "./add_todo";
 import { createRouter, updateLocation } from "./routing";
@@ -268,10 +268,10 @@ function init() {
     const todo = todoCb(options);
     if (todo) {
       if (idToUpdate === undefined) {
-        const newTodoId = await todoAPI.createItem(todo);
+        const newTodoId = await todoAPI.createItem(todo as schemaType);
         store.dispatch(addTodo({ [newTodoId]: todo }));
       } else {
-        await todoAPI.updateItem(todo, Number(idToUpdate));
+        await todoAPI.updateItem(todo as schemaType, Number(idToUpdate));
         store.dispatch(updateTodo({ [idToUpdate]: todo }));
       }
     }

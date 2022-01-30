@@ -63,12 +63,7 @@ describe("Rendering app", () => {
 
     showYearBtn = <HTMLAnchorElement>document.getElementById("show-year-btn");
     showMonthBtn = <HTMLAnchorElement>document.getElementById("show-month-btn");
-    //  showWeekBtn = <HTMLAnchorElement>(
-    //   document.getElementById("show-week-btn")
-    // );
-
     showAnchors = [showYearBtn, showMonthBtn];
-
     monthWrapper = <HTMLElement>document.getElementById("month-wrapper");
 
     filterEl = <HTMLElement>document.getElementById("filter");

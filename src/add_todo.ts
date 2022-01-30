@@ -1,4 +1,4 @@
-import { schemaType } from "./todo/items";
+import { Todo } from "./types";
 
 function validateForm(options: any) {
   let isValid = true;
@@ -23,9 +23,9 @@ function validateForm(options: any) {
   return isValid;
 }
 
-export default function todoCb(options: any) {
-  let todo: schemaType = {} as schemaType;
-  if (!options.isValidate || validateForm(options)) {
+export default function todoCb(options: Record<string, any>) {
+  let todo: Todo = {} as Todo;
+  if (validateForm(options)) {
     const tagsStr = options.tagsEl.innerHTML.split(": ")[1];
     const tags = tagsStr ? tagsStr.replace(/\s+/g, "").split(",") : [];
     let date1 = "";
