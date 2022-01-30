@@ -35,66 +35,70 @@ export const store = configureStore({
   },
 });
 
-export const prevMonthBtn = <HTMLButtonElement>(
-  document.getElementById("prev-month-btn")
-);
-export const nextMonthBtn = <HTMLButtonElement>(
-  document.getElementById("next-month-btn")
-);
-export const todayBtn = <HTMLButtonElement>document.getElementById("today-btn");
-export const popover = <HTMLElement>document.getElementById("popover");
-export const popoverContent = <HTMLElement>(
-  document.getElementById("popover-content")
-);
-export const currentMonthBtn = <HTMLButtonElement>(
-  document.getElementById("current-month-btn")
-);
-export const currentYearBtn = <HTMLButtonElement>(
-  document.getElementById("current-year-btn")
-);
+export let prevMonthBtn: HTMLButtonElement;
+export let nextMonthBtn: HTMLButtonElement;
+export let todayBtn: HTMLButtonElement;
+export let popover: HTMLElement;
+export let popoverContent: HTMLElement;
+export let currentMonthBtn: HTMLButtonElement;
+export let currentYearBtn: HTMLButtonElement;
+export let showYearBtn: HTMLAnchorElement;
+export let showMonthBtn: HTMLAnchorElement;
+export let showAnchors: HTMLElement[];
+export let monthWrapper: HTMLElement;
+export let filterEl: HTMLElement;
+export let calendarWrapper: HTMLElement;
+export let calendar: HTMLElement;
+export let todayTodosList: HTMLUListElement;
+export let todayTodosDate: HTMLElement;
+export let deleteSelectedBtn: HTMLButtonElement;
+export let addTodoBtn: HTMLButtonElement;
+export let addTodoModalWrapper: HTMLElement;
+export let addTodoModal: HTMLFormElement;
 
-export const showYearBtn = <HTMLAnchorElement>(
-  document.getElementById("show-year-btn")
-);
-export const showMonthBtn = <HTMLAnchorElement>(
-  document.getElementById("show-month-btn")
-);
-// export const showWeekBtn = <HTMLAnchorElement>(
-//   document.getElementById("show-week-btn")
-// );
+export function initializeEl() {
+  prevMonthBtn = <HTMLButtonElement>document.getElementById("prev-month-btn");
+  nextMonthBtn = <HTMLButtonElement>document.getElementById("next-month-btn");
 
-export const showAnchors = [showYearBtn, showMonthBtn];
+  todayBtn = <HTMLButtonElement>document.getElementById("today-btn");
+  popover = <HTMLElement>document.getElementById("popover");
+  popoverContent = <HTMLElement>document.getElementById("popover-content");
+  currentMonthBtn = <HTMLButtonElement>(
+    document.getElementById("current-month-btn")
+  );
+  currentYearBtn = <HTMLButtonElement>(
+    document.getElementById("current-year-btn")
+  );
 
-export const monthWrapper = <HTMLElement>(
-  document.getElementById("month-wrapper")
-);
+  showYearBtn = <HTMLAnchorElement>document.getElementById("show-year-btn");
+  showMonthBtn = <HTMLAnchorElement>document.getElementById("show-month-btn");
+  //  showWeekBtn = <HTMLAnchorElement>(
+  //   document.getElementById("show-week-btn")
+  // );
 
-export const filterEl = <HTMLElement>document.getElementById("filter");
-export const calendarWrapper = <HTMLElement>(
-  document.getElementById("calendar-wrapper")
-);
-export const calendar = <HTMLElement>document.getElementById("calendar");
+  showAnchors = [showYearBtn, showMonthBtn];
 
-// Current todolist
-export const todayTodosList = <HTMLUListElement>(
-  document.getElementById("today-todos-list")
-);
-export const todayTodosDate = <HTMLElement>(
-  document.getElementById("today-todos-date")
-);
+  monthWrapper = <HTMLElement>document.getElementById("month-wrapper");
 
-export const deleteSelectedBtn = <HTMLButtonElement>(
-  document.getElementById("delete-selected-btn")
-);
-export const addTodoBtn = <HTMLButtonElement>(
-  document.getElementById("add-todo-btn")
-);
-export const addTodoModalWrapper = <HTMLElement>(
-  document.getElementById("addTodoModalWrapper")
-);
-export const addTodoModal = <HTMLFormElement>(
-  document.getElementById("add-todo-modal")
-);
+  filterEl = <HTMLElement>document.getElementById("filter");
+  calendarWrapper = <HTMLElement>document.getElementById("calendar-wrapper");
+  calendar = <HTMLElement>document.getElementById("calendar");
+
+  // Current todolist
+  todayTodosList = <HTMLUListElement>(
+    document.getElementById("today-todos-list")
+  );
+  todayTodosDate = <HTMLElement>document.getElementById("today-todos-date");
+
+  deleteSelectedBtn = <HTMLButtonElement>(
+    document.getElementById("delete-selected-btn")
+  );
+  addTodoBtn = <HTMLButtonElement>document.getElementById("add-todo-btn");
+  addTodoModalWrapper = <HTMLElement>(
+    document.getElementById("addTodoModalWrapper")
+  );
+  addTodoModal = <HTMLFormElement>document.getElementById("add-todo-modal");
+}
 
 // filter todos
 export let filterTodoBtn: HTMLButtonElement;
@@ -147,12 +151,15 @@ export const todoAPI = new TODO(schema);
 function createSubscriber() {
   const { dates, todos } = store.getState();
   const currentDate = new Date(dates.currentDate);
+  if (!currentMonthBtn) {
+    return;
+  }
   currentMonthBtn.innerHTML = constants.MONTH_RU[dates.currentMonth];
   currentYearBtn.innerHTML = `${dates.currentYear}`;
   todayTodosDate.innerHTML = `Планы на: ${currentDate.getDate()}.${
     currentDate.getMonth() + 1
   }.${currentDate.getFullYear()}`;
-  todayTodosList.innerHTML = showTodayTodos(currentDate);
+  todayTodosList.innerHTML = showTodayTodos(currentDate, todos);
   showYearBtn.setAttribute("href", `${REPO_NAME}/year/${dates.currentYear}`);
   showMonthBtn.setAttribute(
     "href",
@@ -177,12 +184,14 @@ function createSubscriber() {
     constants.YEAR_MONTH_ROUTE.test(window.location.pathname) ||
     window.location.pathname.replace(/\/$/g, "") === REPO_NAME
   ) {
+    const wrappers = { calendarWrapper, monthWrapper };
     renderCalendar(
       calendar,
+      wrappers,
       todos,
       new Date(dates.currentYear, dates.currentMonth, 1)
     );
-    showTodayTodos(currentDate);
+    showTodayTodos(currentDate, todos);
   }
   const selectedTodo = <HTMLTableCellElement>(
     document.querySelector(
@@ -195,6 +204,7 @@ function createSubscriber() {
 }
 
 function init() {
+  initializeEl();
   const todoList = generateTodo();
   const originLocation = REPO_NAME;
   const router = createRouter(originLocation);
@@ -208,6 +218,9 @@ function init() {
       year: new Date().getFullYear(),
     })
   );
+  if (!filterEl) {
+    return;
+  }
   renderTodo(filterEl, constantsTodo.FILTER_MODE);
   getFilterTodoElements();
   renderTodo(addTodoModal, constantsTodo.ADD_MODE);
@@ -225,8 +238,9 @@ function init() {
       todoSelectedStatus: filterTodoSelectedStatus,
       tagsEl: filterTagsEl,
     };
+    const { todos } = store.getState();
     const filter = todoCb(options);
-    todayTodosList.innerHTML = showTodayTodos(filter);
+    todayTodosList.innerHTML = showTodayTodos(filter, todos);
     todayTodosDate.innerHTML = `Фильтр`;
   });
   deleteSelectedBtn.addEventListener("click", () => {
@@ -286,7 +300,12 @@ function init() {
       }
     }
 
-    showPopover(target);
+    showPopover(store, target, {
+      currentMonthBtn,
+      currentYearBtn,
+      popover,
+      popoverContent,
+    });
 
     // Todos на выбранную дату
     const td = target.closest("td");

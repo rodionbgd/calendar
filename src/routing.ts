@@ -1,7 +1,13 @@
 import Router from "./router/router";
 import { renderCalendar, showTodayTodos } from "./render/calendar";
 import { showYear } from "./filter/filter_todos";
-import { calendar, monthWrapper, REPO_NAME, store } from "./index";
+import {
+  calendar,
+  calendarWrapper,
+  monthWrapper,
+  REPO_NAME,
+  store,
+} from "./index";
 import { setMonthYear } from "./reducers";
 import { constants } from "./constants";
 
@@ -9,10 +15,11 @@ function showCalendar() {
   const { dates, todos } = store.getState();
   renderCalendar(
     calendar,
+    { calendarWrapper, monthWrapper },
     todos,
     new Date(dates.currentYear, dates.currentMonth, 1)
   );
-  showTodayTodos(new Date(dates.currentDate));
+  showTodayTodos(new Date(dates.currentDate), todos);
 }
 
 export function createRouter(originLocation: string) {

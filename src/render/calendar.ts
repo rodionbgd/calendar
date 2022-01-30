@@ -1,21 +1,22 @@
 import { TodoObj } from "../types";
 import { constants } from "../constants";
 import { setMonthYear } from "../reducers";
-import {
-  calendarWrapper,
-  currentMonthBtn,
-  currentYearBtn,
-  monthWrapper,
-  popover,
-  popoverContent,
-  REPO_NAME,
-  store,
-} from "../index";
+import { REPO_NAME } from "../index";
 import { constantsTodo } from "../todo/constants_todo";
 import { currentDateTodos, filterTodos } from "../filter/filter_todos";
 import { schemaType } from "../todo/items";
+import { Store } from "redux";
 
-export function renderCalendar(el: HTMLElement, todos: TodoObj[], date?: Date) {
+export function renderCalendar(
+  el: HTMLElement,
+  wrappers: Record<string, HTMLElement>,
+  todos: TodoObj[],
+  date?: Date
+) {
+  const { calendarWrapper, monthWrapper } = wrappers;
+  if (!calendarWrapper || !monthWrapper) {
+    return;
+  }
   calendarWrapper.style.display = "block";
   monthWrapper.style.display = "none";
   if (!date) {
@@ -104,9 +105,11 @@ export function renderCalendar(el: HTMLElement, todos: TodoObj[], date?: Date) {
   el.innerHTML = innerHTML;
 }
 
-export function showTodayTodos(filter: Date | Partial<schemaType>) {
+export function showTodayTodos(
+  filter: Date | Partial<schemaType>,
+  todos: TodoObj[]
+) {
   let todayTodos: TodoObj[];
-  const { todos } = store.getState();
   if (filter instanceof Date && !isNaN(Number(filter))) {
     todayTodos = filterTodos(todos, { date1: `${filter}`, date2: `${filter}` });
   } else {
@@ -254,23 +257,32 @@ export function renderTodo(el: HTMLElement, mode: string) {
   });
 }
 
-export function showPopover(target: HTMLElement) {
+export function showPopover(
+  store: Store,
+  target: HTMLElement,
+  options: Record<string, HTMLElement>
+) {
+  const { currentMonthBtn, currentYearBtn, popover, popoverContent } = options;
   if (target === currentMonthBtn) {
     const offset = currentMonthBtn.clientWidth;
-    renderPopover({
+    renderPopover(store, {
       offset,
       type: "month",
       data: constants.MONTH_RU,
+      popover,
+      popoverContent,
     });
     return;
   }
   if (target === currentYearBtn) {
     const offset = 2 * currentMonthBtn.clientWidth + currentYearBtn.clientWidth;
     const years = Array.from({ length: 10 }, (_, i) => i + 2015);
-    renderPopover({
+    renderPopover(store, {
       offset,
       type: "year",
       data: years,
+      popover,
+      popoverContent,
     });
     return;
   }
@@ -293,17 +305,24 @@ export function showPopover(target: HTMLElement) {
       year,
     })
   );
-  popover.style.display = "none";
+  if (popover) {
+    popover.style.display = "none";
+  }
 }
 
-export function renderPopover(options: any) {
+export function renderPopover(store: Store, options: any) {
   const { dates } = store.getState();
-  const { type, offset, data } = options;
-  if (popover.style.display !== "none" && type === popover.dataset.type) {
+  const { type, offset, data, popover, popoverContent } = options;
+  if (
+    popover &&
+    popover.style.display !== "none" &&
+    type === popover.dataset.type
+  ) {
     popover.style.display = "none";
     popover.dataset.type = "";
     return;
   }
+
   popoverContent.innerHTML = "";
   data.forEach((item: string | number, index: number) => {
     let href;
