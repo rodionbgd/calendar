@@ -148,12 +148,10 @@ function getAddTodoElements() {
 
 export const todoAPI = new TODO(schema);
 
-function createSubscriber() {
+export function createSubscriber() {
   const { dates, todos } = store.getState();
   const currentDate = new Date(dates.currentDate);
-  if (!currentMonthBtn) {
-    return;
-  }
+  initializeEl();
   currentMonthBtn.innerHTML = constants.MONTH_RU[dates.currentMonth];
   currentYearBtn.innerHTML = `${dates.currentYear}`;
   todayTodosDate.innerHTML = `Планы на: ${currentDate.getDate()}.${
@@ -203,7 +201,7 @@ function createSubscriber() {
   }
 }
 
-function init() {
+export function init() {
   initializeEl();
   const todoList = generateTodo();
   const originLocation = REPO_NAME;
@@ -219,7 +217,7 @@ function init() {
     })
   );
   if (!filterEl) {
-    return;
+    return store;
   }
   renderTodo(filterEl, constantsTodo.FILTER_MODE);
   getFilterTodoElements();
@@ -361,6 +359,8 @@ function init() {
       store.dispatch(removeTodos([id]));
     }
   });
+
+  return store;
 }
 
 window.addEventListener("load", init);
