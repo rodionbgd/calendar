@@ -31,8 +31,8 @@ describe("Adding todo", () => {
       .reverse()
       .join("-");
     filterTodoTask.value = "four";
-    filterTodoDateFrom.value = `${date}`;
-    filterTodoDateTo.value = `${date}`;
+    filterTodoDateFrom.value = date;
+    filterTodoDateTo.value = date;
     [filterTodoSelectedStatus.value] = constantsTodo.TASK_IN_PROCESS;
     options = {
       todoTask: filterTodoTask,
@@ -45,43 +45,50 @@ describe("Adding todo", () => {
     test("Valid form", () => {
       expect(validateForm(options)).toBeTruthy();
     });
+    test("Date to < Date from", () => {
+      const date = new Date();
+      date.setDate(date.getDate() - 3);
+      filterTodoDateTo.value = date
+        .toLocaleDateString("ru-RU")
+        .split(".")
+        .reverse()
+        .join("-");
+      options = {
+        ...options,
+        todoDateTo: filterTodoDateTo,
+      };
+      validateForm(options);
+      expect(options.todoDateTo.value).toBe(options.todoDateFrom.value);
+    });
     test("Invalid form", () => {
       filterTodoSelectedStatus.value = "";
 
       options = {
-        todoTask: filterTodoTask,
-        todoDateFrom: filterTodoDateFrom,
-        todoDateTo: filterTodoDateTo,
+        ...options,
         todoSelectedStatus: filterTodoSelectedStatus,
       };
       expect(validateForm(options)).toBeFalsy();
 
       filterTodoTask.value = "";
       options = {
+        ...options,
         todoTask: filterTodoTask,
-        todoDateFrom: filterTodoDateFrom,
-        todoDateTo: filterTodoDateTo,
-        todoSelectedStatus: filterTodoSelectedStatus,
       };
       expect(validateForm(options)).toBeFalsy();
 
       filterTodoDateFrom.value = "";
       options = {
-        todoTask: filterTodoTask,
+        ...options,
         todoDateFrom: filterTodoDateFrom,
-        todoDateTo: filterTodoDateTo,
-        todoSelectedStatus: filterTodoSelectedStatus,
       };
       expect(validateForm(options)).toBeFalsy();
     });
   });
   test("Getting todo from form", () => {
-    const originOptions = {...options};
     options.tagsEl = filterTagsEl;
     const task = options.todoTask.value;
     const todo = getTodoFromForm(options);
     expect(todo.task).toBe(task);
     expect(options.todoTask.value).toBeFalsy();
-
   });
 });

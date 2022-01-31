@@ -18,7 +18,7 @@ export function validateForm(options: any) {
     options.todoDateTo.value &&
     new Date(options.todoDateTo.value) < new Date(options.todoDateFrom.value)
   ) {
-    options.todoDateTo.setAttribute("value", options.todoDateFrom.value);
+    options.todoDateTo.value = options.todoDateFrom.value;
   }
   return isValid;
 }
