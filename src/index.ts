@@ -262,6 +262,7 @@ export function init() {
       todoDateTo: addTodoDateTo,
       todoSelectedStatus: addTodoSelectedStatus,
       tagsEl: addTagsEl,
+      isValidate: true,
     };
     const todo = getTodoFromForm(options);
     if (todo) {

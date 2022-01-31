@@ -25,7 +25,7 @@ export function validateForm(options: any) {
 
 export default function getTodoFromForm(options: Record<string, any>) {
   let todo: Todo = {} as Todo;
-  if (validateForm(options)) {
+  if (!options.isValidate || validateForm(options)) {
     const tagsStr = options.tagsEl.innerHTML.split(": ")[1];
     const tags = tagsStr ? tagsStr.replace(/\s+/g, "").split(",") : [];
     let date1 = "";
