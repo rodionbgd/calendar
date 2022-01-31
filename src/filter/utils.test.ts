@@ -16,4 +16,10 @@ describe("Showing active anchor", () => {
     showActiveAnchor(showAnchors, showYearBtn);
     expect(showYearBtn.classList.contains("active")).toBeTruthy();
   });
+  test("Invalid argument", () => {
+    showAnchors.forEach((anchor) => anchor.classList.remove("active"));
+    const invalidArr = [showAnchors[0]];
+    showActiveAnchor(invalidArr, showAnchors[1]);
+    expect(showAnchors[1].classList.contains("active")).toBeFalsy();
+  });
 });
