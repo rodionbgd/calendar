@@ -7,7 +7,7 @@ module.exports = {
   entry: "./src/index.ts",
   output: {
     filename: "[name].bundle.js",
-    publicPath: "/calendar",
+    publicPath:process.env.NODE_ENV === "development" ? "" : "/calendar",
     path: path.resolve(__dirname, "dist"),
     environment: {
       arrowFunction: false,

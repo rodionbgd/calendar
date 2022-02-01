@@ -200,21 +200,28 @@ export function renderStatusList() {
 
 export function renderTodo(el: HTMLElement, mode: string) {
   const statusList = renderStatusList();
+  const errorBadge = `
+        <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+        <span id="inputSuccess2Status" class="sr-only">(success)</span>
+`;
+  const applyBtn = `<button id="${mode}-todo-btn" type="button" class="btn btn-primary btn-sm">Применить</button>`;
   el.innerHTML = `
-        <div class="was-validated">
-            <div class="form-group">
+        <div id="todo-form">
+            <div class="form-group has-error has-feedback">
                 <div class="input-group-prepend">
                     <span class="input-group-text bold">
                         <strong>Напоминание</strong>
                     </span>
                 </div>
-                <input class="form-control" id="${mode}-todo-task" type="text">
+                <input type="text" class="form-control" id="${mode}-todo-task">
+                ${mode === constantsTodo.ADD_MODE ? errorBadge : ""}
             </div>        
-            <div class="input-group mb-3">
+            <div class="input-group mb-3 has-error">
                 <div class="input-group-prepend">
                     <span class="input-group-text">От</span>
                 </div>
                 <input class="form-control" id="${mode}-todo-date-from" type="date">
+                 ${mode === constantsTodo.ADD_MODE ? errorBadge : ""}
             </div>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
@@ -223,17 +230,18 @@ export function renderTodo(el: HTMLElement, mode: string) {
                 <input class="form-control" id="${mode}-todo-date-to" type="date">
             </div>
         
-            <div class="input-group mb-3">
+            <div class="form-group mb-3 has-error">
                 <div class="input-group-prepend">
                     <label class="input-group-text"><strong>Статус</strong></label>
                 </div>
-                <select class="custom-select" id="${mode}-todo-selected-status">
+                <select class="custom-select form-control" id="${mode}-todo-selected-status">
                     ${statusList}
                 </select>
+               
             </div>
             <p id="${mode}-tags">Теги: </p>
             <input id="${mode}-tags-input" type="text">
-            <button id="${mode}-todo-btn" type="button" class="btn btn-primary btn-sm">Применить</button>
+            ${mode === constantsTodo.FILTER_MODE ? applyBtn : ""}
             <button type="reset" class="btn btn-secondary btn-sm">Сброс</button>
         </div>
     `;

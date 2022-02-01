@@ -1,5 +1,5 @@
 export const bodyInnerHTML = `
-    <main class="app">
+     <main class="app">
       <aside>
         <h2>Фильтр</h2>
         <form id="filter" onsubmit="return false;"></form>
@@ -18,7 +18,7 @@ export const bodyInnerHTML = `
             <a
               id="today-btn"
               class="js-cal-option btn btn-default"
-              href="/calendar"
+              href="/"
             >
               Сегодня
             </a>
@@ -54,7 +54,13 @@ export const bodyInnerHTML = `
                 class="js-cal-option btn btn-default active"
               >
                 Месяц
-              </a> 
+              </a>
+              <!--              <a-->
+              <!--                id="show-week-btn"-->
+              <!--                class="js-cal-option btn btn-default"-->
+              <!--              >-->
+              <!--                Неделя-->
+              <!--              </a>-->
             </span>
           </section>
         </section>
@@ -83,6 +89,7 @@ export const bodyInnerHTML = `
           </button>
           <button
             class="btn btn-primary"
+            id="add-todo-modal-btn"
             data-toggle="modal"
             data-target="#addTodoModalWrapper"
           >
@@ -128,7 +135,6 @@ export const bodyInnerHTML = `
                 <button
                   id="add-todo-btn"
                   type="button"
-                  data-dismiss="modal"
                   class="btn btn-primary"
                 >
                   Добавить

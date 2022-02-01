@@ -3,16 +3,25 @@ import { Todo } from "./types";
 export function validateForm(options: any) {
   let isValid = true;
   if (!options.todoTask.value) {
-    options.todoTask.classList.add("invalid-feedback");
+    options.todoTask.parentNode.classList.add("has-error");
     isValid = false;
+  } else {
+    options.todoTask.parentNode.classList.remove("has-error");
+    options.todoTask.parentNode.classList.add("has-success");
   }
   if (!options.todoDateFrom.value) {
-    options.todoDateFrom.classList.add("invalid-feedback");
+    options.todoDateFrom.parentNode.classList.add("has-error");
     isValid = false;
+  } else {
+    options.todoDateFrom.parentNode.classList.remove("has-error");
+    options.todoDateFrom.parentNode.classList.add("has-success");
   }
   if (!options.todoSelectedStatus.value) {
-    options.todoSelectedStatus.classList.add("invalid-feedback");
+    options.todoSelectedStatus.parentNode.classList.add("has-error");
     isValid = false;
+  } else {
+    options.todoSelectedStatus.parentNode.classList.remove("has-error");
+    options.todoSelectedStatus.parentNode.classList.add("has-success");
   }
   if (
     options.todoDateTo.value &&
@@ -23,9 +32,12 @@ export function validateForm(options: any) {
   return isValid;
 }
 
-export default function getTodoFromForm(options: Record<string, any>) {
+export default function getTodoFromForm(
+  options: Record<string, any>,
+  isValidate: boolean
+) {
   let todo: Todo = {} as Todo;
-  if (!options.isValidate || validateForm(options)) {
+  if (!isValidate || validateForm(options)) {
     const tagsStr = options.tagsEl.innerHTML.split(": ")[1];
     const tags = tagsStr ? tagsStr.replace(/\s+/g, "").split(",") : [];
     let date1 = "";
@@ -55,7 +67,10 @@ export default function getTodoFromForm(options: Record<string, any>) {
         : "",
       tags,
     };
+  } else {
+    return null;
   }
+
   // Очистка формы
   options.todoTask.value = "";
   options.todoDateFrom.value = "";

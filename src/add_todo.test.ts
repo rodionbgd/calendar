@@ -87,8 +87,8 @@ describe("Adding todo", () => {
   test("Getting todo from form", () => {
     options.tagsEl = filterTagsEl;
     const task = options.todoTask.value;
-    const todo = getTodoFromForm(options);
-    expect(todo.task).toBe(task);
+    const todo = getTodoFromForm(options, true);
+    expect(todo!.task).toBe(task);
     expect(options.todoTask.value).toBeFalsy();
   });
 });

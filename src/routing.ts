@@ -51,7 +51,7 @@ export function updateLocation(
   originLocation: string,
   s?: Store
 ) {
-  if (!href || !originLocation) {
+  if (!href) {
     return;
   }
   let storeOriginal = store;

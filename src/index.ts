@@ -26,7 +26,9 @@ import getTodoFromForm from "./add_todo";
 import { createRouter, updateLocation } from "./routing";
 import { showActiveAnchor } from "./filter/utils";
 
-export const REPO_NAME = "/calendar";
+// const DEBUG_PATH = "";
+const PROD_PATH = "/calendar";
+export const REPO_NAME = PROD_PATH;
 
 export const store = configureStore({
   reducer: {
@@ -52,6 +54,7 @@ export let calendar: HTMLElement;
 export let todayTodosList: HTMLUListElement;
 export let todayTodosDate: HTMLElement;
 export let deleteSelectedBtn: HTMLButtonElement;
+export let addTodoModalBtn: HTMLButtonElement;
 export let addTodoBtn: HTMLButtonElement;
 export let addTodoModalWrapper: HTMLElement;
 export let addTodoModal: HTMLFormElement;
@@ -92,6 +95,10 @@ export function initializeEl() {
 
   deleteSelectedBtn = <HTMLButtonElement>(
     document.getElementById("delete-selected-btn")
+  );
+
+  addTodoModalBtn = <HTMLButtonElement>(
+    document.getElementById("add-todo-modal-btn")
   );
   addTodoBtn = <HTMLButtonElement>document.getElementById("add-todo-btn");
   addTodoModalWrapper = <HTMLElement>(
@@ -144,6 +151,8 @@ function getAddTodoElements() {
     document.getElementById("add-todo-selected-status")
   );
   addTagsEl = <HTMLParagraphElement>document.getElementById("add-tags");
+
+  addTodoTask.classList.add("has-feedback");
 }
 
 export const todoAPI = new TODO(schema);
@@ -237,9 +246,11 @@ export function init() {
       tagsEl: filterTagsEl,
     };
     const { todos } = store.getState();
-    const filter = getTodoFromForm(options);
-    todayTodosList.innerHTML = showTodayTodos(filter, todos);
-    todayTodosDate.innerHTML = `Фильтр`;
+    const filter = getTodoFromForm(options, false);
+    if (filter) {
+      todayTodosList.innerHTML = showTodayTodos(filter, todos);
+      todayTodosDate.innerHTML = `Фильтр`;
+    }
   });
   deleteSelectedBtn.addEventListener("click", () => {
     const deleteTodosList = Array.from(
@@ -255,6 +266,11 @@ export function init() {
       store.dispatch(removeTodos(deleteTodosId));
     }
   });
+
+  addTodoModalBtn.addEventListener("click", () => {
+    renderTodo(addTodoModal, constantsTodo.ADD_MODE);
+    getAddTodoElements();
+  });
   addTodoBtn.addEventListener("click", async () => {
     const options = {
       todoTask: addTodoTask,
@@ -262,10 +278,10 @@ export function init() {
       todoDateTo: addTodoDateTo,
       todoSelectedStatus: addTodoSelectedStatus,
       tagsEl: addTagsEl,
-      isValidate: true,
     };
-    const todo = getTodoFromForm(options);
+    const todo = getTodoFromForm(options, true);
     if (todo) {
+      addTodoBtn.dataset.dismiss = "modal";
       if (idToUpdate === undefined) {
         const newTodoId = await todoAPI.createItem(todo as schemaType);
         store.dispatch(addTodo({ [newTodoId]: todo }));
@@ -273,6 +289,17 @@ export function init() {
         await todoAPI.updateItem(todo as schemaType, Number(idToUpdate));
         store.dispatch(updateTodo({ [idToUpdate]: todo }));
       }
+      // addTodoModalWrapper.style.display = "none";
+      // addTodoModalWrapper.ariaHidden = "false";
+      // addTodoModalWrapper.classList.remove("in");
+    } else {
+      addTodoBtn.dataset.dismiss = "";
+      // setTimeout(()=>{
+      //   addTodoModalWrapper.style.display = "block";
+      //   addTodoModalWrapper.style.paddingLeft = "0";
+      //   addTodoModalWrapper.ariaHidden = "true";
+      //   addTodoModalWrapper.classList.add("in");
+      // },300);
     }
     idToUpdate = undefined;
   });
