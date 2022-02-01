@@ -22,7 +22,7 @@ import generateTodo from "./utils";
 import TODO from "./todo/todo";
 import { schema, schemaType } from "./todo/items";
 import { constantsTodo } from "./todo/constants_todo";
-import getTodoFromForm from "./add_todo";
+import getTodoFromForm, { validateForm } from "./add_todo";
 import { createRouter, updateLocation } from "./routing";
 import { showActiveAnchor } from "./filter/utils";
 
@@ -54,7 +54,6 @@ export let calendar: HTMLElement;
 export let todayTodosList: HTMLUListElement;
 export let todayTodosDate: HTMLElement;
 export let deleteSelectedBtn: HTMLButtonElement;
-export let addTodoModalBtn: HTMLButtonElement;
 export let addTodoBtn: HTMLButtonElement;
 export let addTodoModalWrapper: HTMLElement;
 export let addTodoModal: HTMLFormElement;
@@ -96,10 +95,6 @@ export function initializeEl() {
   deleteSelectedBtn = <HTMLButtonElement>(
     document.getElementById("delete-selected-btn")
   );
-
-  addTodoModalBtn = <HTMLButtonElement>(
-    document.getElementById("add-todo-modal-btn")
-  );
   addTodoBtn = <HTMLButtonElement>document.getElementById("add-todo-btn");
   addTodoModalWrapper = <HTMLElement>(
     document.getElementById("addTodoModalWrapper")
@@ -121,8 +116,6 @@ export let addTodoDateFrom: HTMLInputElement;
 export let addTodoDateTo: HTMLInputElement;
 export let addTodoSelectedStatus: HTMLSelectElement;
 export let addTagsEl: HTMLParagraphElement;
-
-export let idToUpdate: string | undefined;
 
 function getFilterTodoElements() {
   filterTodoBtn = <HTMLButtonElement>document.getElementById("filter-todo-btn");
@@ -267,10 +260,7 @@ export function init() {
     }
   });
 
-  addTodoModalBtn.addEventListener("click", () => {
-    renderTodo(addTodoModal, constantsTodo.ADD_MODE);
-    getAddTodoElements();
-  });
+  let idToUpdate: string;
   addTodoBtn.addEventListener("click", async () => {
     const options = {
       todoTask: addTodoTask,
@@ -282,26 +272,18 @@ export function init() {
     const todo = getTodoFromForm(options, true);
     if (todo) {
       addTodoBtn.dataset.dismiss = "modal";
-      if (idToUpdate === undefined) {
+      validateForm(options);
+      if (idToUpdate === "") {
         const newTodoId = await todoAPI.createItem(todo as schemaType);
         store.dispatch(addTodo({ [newTodoId]: todo }));
       } else {
         await todoAPI.updateItem(todo as schemaType, Number(idToUpdate));
         store.dispatch(updateTodo({ [idToUpdate]: todo }));
+        idToUpdate = "";
       }
-      // addTodoModalWrapper.style.display = "none";
-      // addTodoModalWrapper.ariaHidden = "false";
-      // addTodoModalWrapper.classList.remove("in");
     } else {
       addTodoBtn.dataset.dismiss = "";
-      // setTimeout(()=>{
-      //   addTodoModalWrapper.style.display = "block";
-      //   addTodoModalWrapper.style.paddingLeft = "0";
-      //   addTodoModalWrapper.ariaHidden = "true";
-      //   addTodoModalWrapper.classList.add("in");
-      // },300);
     }
-    idToUpdate = undefined;
   });
 
   document.body.addEventListener("click", async (e) => {
