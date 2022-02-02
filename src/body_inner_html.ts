@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 export const bodyInnerHTML = `
      <main class="app">
       <aside>

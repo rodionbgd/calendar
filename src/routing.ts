@@ -1,15 +1,10 @@
 import { Store } from "redux";
 import Router from "./router/router";
 import { renderCalendar, showTodayTodos, showYear } from "./render/calendar";
-import {
-  calendar,
-  calendarWrapper,
-  monthWrapper,
-  REPO_NAME,
-  store,
-} from "./index";
+import { calendar, calendarWrapper, monthWrapper } from "./elements";
 import { setMonthYear } from "./reducers";
 import { constants } from "./constants";
+import { REPO_NAME, store } from "./index";
 
 export function showCalendar() {
   const { dates, todos } = store.getState();

@@ -13,8 +13,7 @@ import { datesSlice, DateState, setTodoDate, todoSlice } from "../reducers";
 import generateTodo from "../utils";
 import { constantsTodo } from "../todo/constants_todo";
 
-import "jest-fetch-mock";
-import { bodyInnerHTML } from "../__test__/utils";
+import { bodyInnerHTML } from "../body_inner_html";
 import { constants } from "../constants";
 
 describe("Rendering app", () => {

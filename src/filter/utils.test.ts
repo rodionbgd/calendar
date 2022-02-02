@@ -1,4 +1,4 @@
-import { bodyInnerHTML } from "../__test__/utils";
+import { bodyInnerHTML } from "../body_inner_html";
 import { showActiveAnchor } from "./utils";
 
 describe("Showing active anchor", () => {

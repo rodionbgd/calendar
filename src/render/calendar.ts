@@ -1,10 +1,11 @@
 import { Todo, TodoObj } from "../types";
 import { constants } from "../constants";
 import { setMonthYear } from "../reducers";
-import { calendarWrapper, REPO_NAME, store } from "../index";
+import { REPO_NAME, store } from "../index";
 import { constantsTodo } from "../todo/constants_todo";
 import { filterTodos } from "../filter/filter_todos";
 import { Store } from "redux";
+import { calendarWrapper } from "../elements";
 
 export function renderCalendar(
   el: HTMLElement,
@@ -205,9 +206,10 @@ export function renderTodo(el: HTMLElement, mode: string) {
         <span id="inputSuccess2Status" class="sr-only">(success)</span>
 `;
   const applyBtn = `<button id="${mode}-todo-btn" type="button" class="btn btn-primary btn-sm">Применить</button>`;
+  const hasErrorClass = mode === constantsTodo.ADD_MODE ? "has-error" : "";
   el.innerHTML = `
         <div id="todo-form">
-            <div class="form-group has-error has-feedback">
+            <div class="form-group ${hasErrorClass} has-feedback">
                 <div class="input-group-prepend">
                     <span class="input-group-text bold">
                         <strong>Напоминание</strong>
@@ -216,7 +218,7 @@ export function renderTodo(el: HTMLElement, mode: string) {
                 <input type="text" class="form-control" id="${mode}-todo-task">
                 ${mode === constantsTodo.ADD_MODE ? errorBadge : ""}
             </div>        
-            <div class="input-group mb-3 has-error">
+            <div class="input-group mb-3 ${hasErrorClass}">
                 <div class="input-group-prepend">
                     <span class="input-group-text">От</span>
                 </div>
@@ -230,7 +232,7 @@ export function renderTodo(el: HTMLElement, mode: string) {
                 <input class="form-control" id="${mode}-todo-date-to" type="date">
             </div>
         
-            <div class="form-group mb-3 has-error">
+            <div class="form-group mb-3 ${hasErrorClass}">
                 <div class="input-group-prepend">
                     <label class="input-group-text"><strong>Статус</strong></label>
                 </div>

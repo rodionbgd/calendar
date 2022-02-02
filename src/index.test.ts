@@ -1,6 +1,6 @@
 import { Store } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
-import { bodyInnerHTML } from "./__test__/utils";
+import { bodyInnerHTML } from "./body_inner_html";
 import { createSubscriber, init } from "./index";
 import { datesSlice, todoSlice } from "./reducers";
 import { constants } from "./constants";

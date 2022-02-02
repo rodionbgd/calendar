@@ -2,7 +2,7 @@ import { Store } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { datesSlice, todoSlice } from "./reducers";
 import * as Calendar from "./render/calendar";
-import { bodyInnerHTML } from "./__test__/utils";
+import { bodyInnerHTML } from "./body_inner_html";
 import { createRouter, updateLocation } from "./routing";
 import { REPO_NAME } from "./index";
 import { constants } from "./constants";

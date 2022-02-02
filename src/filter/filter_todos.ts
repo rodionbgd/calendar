@@ -1,10 +1,29 @@
 import { Todo, TodoObj } from "../types";
+import {
+  filterTagsEl,
+  filterTodoDateFrom,
+  filterTodoDateTo,
+  filterTodoSelectedStatus,
+  filterTodoTask,
+  todayTodosDate,
+  todayTodosList,
+} from "../elements";
+import { showTodayTodos } from "../render/calendar";
+import { store } from "../index";
+import getTodoFromForm from "../add_todo";
 
+const TODO_KEYS = {
+  TASK: "task",
+  DATE_FROM: "date1",
+  DATE_TO: "date2",
+  STATUS: "status",
+  TAGS: "tags",
+};
 export function filterTodos(todos: TodoObj[], filter: Partial<Todo>) {
   let filteredTodos = [...todos];
   Object.entries(filter).forEach(([key, value]) => {
     switch (key) {
-      case "date1":
+      case TODO_KEYS.DATE_FROM:
         if (!value) {
           break;
         }
@@ -24,7 +43,7 @@ export function filterTodos(todos: TodoObj[], filter: Partial<Todo>) {
           return new Date(value as string) <= todoDate2;
         });
         break;
-      case "date2": {
+      case TODO_KEYS.DATE_TO: {
         if (!value) {
           break;
         }
@@ -41,7 +60,7 @@ export function filterTodos(todos: TodoObj[], filter: Partial<Todo>) {
         });
         break;
       }
-      case "task":
+      case TODO_KEYS.TASK:
         if (!value) {
           break;
         }
@@ -50,7 +69,7 @@ export function filterTodos(todos: TodoObj[], filter: Partial<Todo>) {
           return todo.task.indexOf(value as string) !== -1;
         });
         break;
-      case "status":
+      case TODO_KEYS.STATUS:
         if (!value) {
           break;
         }
@@ -59,7 +78,7 @@ export function filterTodos(todos: TodoObj[], filter: Partial<Todo>) {
           return todo.status === (value as string);
         });
         break;
-      case "tags":
+      case TODO_KEYS.TAGS:
         if (!(value as string[]).length) {
           break;
         }
@@ -75,4 +94,20 @@ export function filterTodos(todos: TodoObj[], filter: Partial<Todo>) {
     }
   });
   return filteredTodos;
+}
+
+export function filterTodoCb() {
+  const options = {
+    todoTask: filterTodoTask,
+    todoDateFrom: filterTodoDateFrom,
+    todoDateTo: filterTodoDateTo,
+    todoSelectedStatus: filterTodoSelectedStatus,
+    tagsEl: filterTagsEl,
+  };
+  const { todos } = store.getState();
+  const filter = getTodoFromForm(options, false);
+  if (filter) {
+    todayTodosList.innerHTML = showTodayTodos(filter, todos);
+    todayTodosDate.innerHTML = `Фильтр`;
+  }
 }

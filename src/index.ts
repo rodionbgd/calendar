@@ -9,8 +9,6 @@ import {
   setMonthYear,
   setTodoDate,
   removeTodos,
-  addTodo,
-  updateTodo,
 } from "./reducers";
 import {
   renderTodo,
@@ -20,11 +18,42 @@ import {
 } from "./render/calendar";
 import generateTodo from "./utils";
 import TODO from "./todo/todo";
-import { schema, schemaType } from "./todo/items";
+import { schema } from "./todo/items";
 import { constantsTodo } from "./todo/constants_todo";
-import getTodoFromForm, { validateForm } from "./add_todo";
+import { addTodoCb, getTodoFormElements, validateForm } from "./add_todo";
 import { createRouter, updateLocation } from "./routing";
 import { showActiveAnchor } from "./filter/utils";
+import {
+  addTagsEl,
+  addTodoBtn,
+  addTodoDateFrom,
+  addTodoDateTo,
+  addTodoModal,
+  addTodoSelectedStatus,
+  addTodoTask,
+  calendar,
+  calendarWrapper,
+  currentMonthBtn,
+  currentYearBtn,
+  deleteSelectedBtn,
+  filterEl,
+  filterTodoBtn,
+  getAddTodoElements,
+  getFilterTodoElements,
+  initializeEl,
+  monthWrapper,
+  nextMonthBtn,
+  popover,
+  popoverContent,
+  prevMonthBtn,
+  showAnchors,
+  showMonthBtn,
+  showYearBtn,
+  todayBtn,
+  todayTodosDate,
+  todayTodosList,
+} from "./elements";
+import { filterTodoCb } from "./filter/filter_todos";
 
 // const DEBUG_PATH = "";
 const PROD_PATH = "/calendar";
@@ -36,117 +65,6 @@ export const store = configureStore({
     todos: todoSlice.reducer,
   },
 });
-
-export let prevMonthBtn: HTMLButtonElement;
-export let nextMonthBtn: HTMLButtonElement;
-export let todayBtn: HTMLButtonElement;
-export let popover: HTMLElement;
-export let popoverContent: HTMLElement;
-export let currentMonthBtn: HTMLButtonElement;
-export let currentYearBtn: HTMLButtonElement;
-export let showYearBtn: HTMLAnchorElement;
-export let showMonthBtn: HTMLAnchorElement;
-export let showAnchors: HTMLElement[];
-export let monthWrapper: HTMLElement;
-export let filterEl: HTMLElement;
-export let calendarWrapper: HTMLElement;
-export let calendar: HTMLElement;
-export let todayTodosList: HTMLUListElement;
-export let todayTodosDate: HTMLElement;
-export let deleteSelectedBtn: HTMLButtonElement;
-export let addTodoBtn: HTMLButtonElement;
-export let addTodoModalWrapper: HTMLElement;
-export let addTodoModal: HTMLFormElement;
-
-export function initializeEl() {
-  prevMonthBtn = <HTMLButtonElement>document.getElementById("prev-month-btn");
-  nextMonthBtn = <HTMLButtonElement>document.getElementById("next-month-btn");
-
-  todayBtn = <HTMLButtonElement>document.getElementById("today-btn");
-  popover = <HTMLElement>document.getElementById("popover");
-  popoverContent = <HTMLElement>document.getElementById("popover-content");
-  currentMonthBtn = <HTMLButtonElement>(
-    document.getElementById("current-month-btn")
-  );
-  currentYearBtn = <HTMLButtonElement>(
-    document.getElementById("current-year-btn")
-  );
-
-  showYearBtn = <HTMLAnchorElement>document.getElementById("show-year-btn");
-  showMonthBtn = <HTMLAnchorElement>document.getElementById("show-month-btn");
-  //  showWeekBtn = <HTMLAnchorElement>(
-  //   document.getElementById("show-week-btn")
-  // );
-
-  showAnchors = [showYearBtn, showMonthBtn];
-
-  monthWrapper = <HTMLElement>document.getElementById("month-wrapper");
-
-  filterEl = <HTMLElement>document.getElementById("filter");
-  calendarWrapper = <HTMLElement>document.getElementById("calendar-wrapper");
-  calendar = <HTMLElement>document.getElementById("calendar");
-
-  // Current todolist
-  todayTodosList = <HTMLUListElement>(
-    document.getElementById("today-todos-list")
-  );
-  todayTodosDate = <HTMLElement>document.getElementById("today-todos-date");
-
-  deleteSelectedBtn = <HTMLButtonElement>(
-    document.getElementById("delete-selected-btn")
-  );
-  addTodoBtn = <HTMLButtonElement>document.getElementById("add-todo-btn");
-  addTodoModalWrapper = <HTMLElement>(
-    document.getElementById("addTodoModalWrapper")
-  );
-  addTodoModal = <HTMLFormElement>document.getElementById("add-todo-modal");
-}
-
-// filter todos
-export let filterTodoBtn: HTMLButtonElement;
-export let filterTodoTask: HTMLTextAreaElement;
-export let filterTodoDateFrom: HTMLInputElement;
-export let filterTodoDateTo: HTMLInputElement;
-export let filterTodoSelectedStatus: HTMLSelectElement;
-export let filterTagsEl: HTMLParagraphElement;
-
-// add item
-export let addTodoTask: HTMLTextAreaElement;
-export let addTodoDateFrom: HTMLInputElement;
-export let addTodoDateTo: HTMLInputElement;
-export let addTodoSelectedStatus: HTMLSelectElement;
-export let addTagsEl: HTMLParagraphElement;
-
-function getFilterTodoElements() {
-  filterTodoBtn = <HTMLButtonElement>document.getElementById("filter-todo-btn");
-  filterTodoTask = <HTMLTextAreaElement>(
-    document.getElementById("filter-todo-task")
-  );
-  filterTodoDateFrom = <HTMLInputElement>(
-    document.getElementById("filter-todo-date-from")
-  );
-  filterTodoDateTo = <HTMLInputElement>(
-    document.getElementById("filter-todo-date-to")
-  );
-  filterTodoSelectedStatus = <HTMLSelectElement>(
-    document.getElementById("filter-todo-selected-status")
-  );
-  filterTagsEl = <HTMLParagraphElement>document.getElementById("filter-tags");
-}
-
-function getAddTodoElements() {
-  addTodoTask = <HTMLTextAreaElement>document.getElementById("add-todo-task");
-  addTodoDateFrom = <HTMLInputElement>(
-    document.getElementById("add-todo-date-from")
-  );
-  addTodoDateTo = <HTMLInputElement>document.getElementById("add-todo-date-to");
-  addTodoSelectedStatus = <HTMLSelectElement>(
-    document.getElementById("add-todo-selected-status")
-  );
-  addTagsEl = <HTMLParagraphElement>document.getElementById("add-tags");
-
-  addTodoTask.classList.add("has-feedback");
-}
 
 export const todoAPI = new TODO(schema);
 
@@ -230,60 +148,27 @@ export function init() {
     updateLocation(window.location.pathname, originLocation);
     router.go(window.location.pathname);
   }
-  filterTodoBtn.addEventListener("click", () => {
-    const options = {
-      todoTask: filterTodoTask,
-      todoDateFrom: filterTodoDateFrom,
-      todoDateTo: filterTodoDateTo,
-      todoSelectedStatus: filterTodoSelectedStatus,
-      tagsEl: filterTagsEl,
-    };
-    const { todos } = store.getState();
-    const filter = getTodoFromForm(options, false);
-    if (filter) {
-      todayTodosList.innerHTML = showTodayTodos(filter, todos);
-      todayTodosDate.innerHTML = `Фильтр`;
-    }
-  });
+  filterTodoBtn.addEventListener("click", filterTodoCb);
   deleteSelectedBtn.addEventListener("click", () => {
     const deleteTodosList = Array.from(
       document.querySelectorAll("input[type=checkbox]")
     ).filter((todo) => (todo as HTMLInputElement).checked);
     if (deleteTodosList) {
-      const deleteTodosId: string[] = [];
+      const deletedTodosId: string[] = [];
       deleteTodosList.forEach(async (todo) => {
-        const id = Number((todo as HTMLElement).dataset.id);
-        deleteTodosId.push(`${id}`);
-        await todoAPI.deleteItem(id);
+        const { id } = (todo as HTMLElement).dataset;
+        deletedTodosId.push(`${id}`);
       });
-      store.dispatch(removeTodos(deleteTodosId));
+      store.dispatch(removeTodos(deletedTodosId));
+      deletedTodosId.forEach(async (id) => {
+        await todoAPI.deleteItem(Number(id));
+      });
     }
   });
 
-  let idToUpdate: string;
+  let idToUpdate = "";
   addTodoBtn.addEventListener("click", async () => {
-    const options = {
-      todoTask: addTodoTask,
-      todoDateFrom: addTodoDateFrom,
-      todoDateTo: addTodoDateTo,
-      todoSelectedStatus: addTodoSelectedStatus,
-      tagsEl: addTagsEl,
-    };
-    const todo = getTodoFromForm(options, true);
-    if (todo) {
-      addTodoBtn.dataset.dismiss = "modal";
-      validateForm(options);
-      if (idToUpdate === "") {
-        const newTodoId = await todoAPI.createItem(todo as schemaType);
-        store.dispatch(addTodo({ [newTodoId]: todo }));
-      } else {
-        await todoAPI.updateItem(todo as schemaType, Number(idToUpdate));
-        store.dispatch(updateTodo({ [idToUpdate]: todo }));
-        idToUpdate = "";
-      }
-    } else {
-      addTodoBtn.dataset.dismiss = "";
-    }
+    idToUpdate = await addTodoCb(idToUpdate);
   });
 
   document.body.addEventListener("click", async (e) => {
@@ -362,6 +247,8 @@ export function init() {
       if (todo.tags && todo.tags.length) {
         addTagsEl.innerHTML = `Теги: ${todo.tags.join(", ")}`;
       }
+      const options = getTodoFormElements();
+      validateForm(options);
     }
     // Удаление выбранного item
     if (actionBtn.dataset.action === constantsTodo.DELETE) {
