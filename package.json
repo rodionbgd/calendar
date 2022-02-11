@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Calendar",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
+    "test:badges": "npm run test  && jest-coverage-badges output \"./badges\"",
     "lint": "eslint src && prettier --check src",
     "lint:fix": "eslint --fix src && prettier --write src",
     "ci": "npm test && npm run lint:fix",
@@ -59,6 +60,7 @@
     "husky": "^7.0.1",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.0.6",
+    "jest-coverage-badges": "^1.1.2",
     "lint-staged": "^11.1.2",
     "mini-css-extract-plugin": "^2.4.5",
     "prettier": "^2.4.1",
