@@ -6,4 +6,9 @@ module.exports = {
     "\\.(scss|css)$": "identity-obj-proxy",
   },
   testEnvironment: "jsdom",
+  "coverageReporters": [
+    "json-summary",
+    "text",
+    "lcov"
+  ]
 };
