@@ -8,7 +8,7 @@
 ![test-coverage](./badges/badge-lines.svg)
 ![sanity check](https://github.com/rodionbgd/calendar/actions/workflows/sanity-check.yml/badge.svg)
 
-**Calendar is a Todo App with simple UI and easy to use functionalities**
+## Calendar is a Todo App with simple UI and easy to use functionalities
 
 
 ## 🛠 Functionalities included
@@ -30,7 +30,7 @@
 - Complex filter
 
 
-## Features
+## 🪄 Features
 
 - Self-written router
 - Self-written CRUD-engine
